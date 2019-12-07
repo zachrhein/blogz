@@ -1,28 +1,25 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Sign Up!</h1>
-<form action="/signup" method='POST'>
-    <table>
-        <tr>
-            <td><label for="email">Email</label></td>
-            <td>
-                <input name="email" type="email" value="{{ email }}">
-            </td>
-        </tr>
-        <tr>
-            <td><label for="password">Password</label></td>
-            <td>
-                <input name="password" type="password">
-            </td>
-        </tr>
-        <tr>
-            <td><label for="verify">Verify Password</label></td>
-            <td>
-                <input name="verify" type="password">
-            </td>
-        </tr>
-    </table>
-    <input type="submit" value="Sign up">
-</form>
+<style>
+        .error {color: red; }
+    </style>
+    <h1>Sign Up</h1>
+    <form action='/signup' method='POST'>
+        <label>Username
+            <input name="username" type="text" value='{{username}}' />
+        </label>
+        <p class="error">{{usernameerror}}</p>
+        <label>Password
+            <input name="password" type="password" />
+        </label>
+        <p class='error'>{{passworderror}}</p>
+        <label>Verify Password
+            <input name='verify' type="password" />
+        </label>
+        <p class='error'>{{verifyerror}}</p>
+        <input type='submit' value='submit' />
+        <p class='error'>{{existserror}}</p>
+    </form>
+    
 {% endblock %}

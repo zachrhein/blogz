@@ -5,6 +5,7 @@ app = Flask(__name__)
 app.config['DEBUG'] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://blogz:password@localhost:8889/blogz'
 app.config['SQLALCHEMY_ECHO'] = True
+app.config['SECRET_KEY'] = '4567sdfvbnmkjhgfds456789'
 db = SQLAlchemy(app)
 
 class Blog(db.Model):
@@ -21,7 +22,7 @@ class Blog(db.Model):
 class User(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
-    usermame = db.Column(db.String(120), unique=True)
+    username = db.Column(db.String(120), unique=True)
     password = db.Column(db.String(1000))
     blogs = db.relationship('Blog', backref='owner')
 
@@ -65,28 +66,42 @@ def newpost():
 
 
 
-@app.route('/signup', methods=['POST'])
+@app.route('/signup', methods=['POST', 'GET'])
 def signup():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
         verify = request.form['verify']
-# if statements to check authenticity
-
+        verifyerror = ''
+        passworderror = ''
+        usernameerror= ''
+        existserror = ''
         existing_user = User.query.filter_by(username=username).first()
-        if not existing_user:
+        if verify != password or verify == '':
+            verifyerror = "Please enter a valid verify password"
+
+        if not 3 < len(password) or " " in password or password == '':
+            passworderror = "Please enter a valid password"
+        
+        if not 3 < len(username) or " " in username or username == '':
+            username = ''
+            usernameerror = "Please enter a valid username"
+
+        if existing_user == username:
+            existserror = "Username already exists"
+
+        if not usernameerror and not verifyerror and not passworderror and not existing_user:
             new_user = User(username, password)
             db.session.add(new_user)
             db.session.commit()
             session['username'] = username
-            return redirect('/')
+            return redirect('/newpost')
+
         else:
-            return "<h1>Duplicate user</h1>"
-
-    return render_template('signup.html')
-
-
-@app.route('/login', methods=['POST'])
+            return render_template("signup.html",username = username, usernameerror = usernameerror, verifyerror = verifyerror, passworderror = passworderror, existserror = existserror )
+    return render_template('/signup.html')
+        
+@app.route('/login', methods=['POST', 'GET'])
 def login():
     if request.method == 'POST':
         username = request.form['username']
