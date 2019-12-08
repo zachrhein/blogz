@@ -18,7 +18,7 @@ class Blog(db.Model):
     def __init__(self, title, body, owner):
         self.title = title
         self.body = body
-        self.owner = owner
+        self.owner_id = owner
 
 class User(db.Model):
 
@@ -56,7 +56,7 @@ def newpost():
     if request.method =='POST':
         blog_title = request.form['title']
         blog_body = request.form['body']
-        new_post = Blog(blog_title, blog_body)
+        new_post = Blog(blog_title, blog_body, blog_owner)
         db.session.add(new_post)
         db.session.commit()
         return render_template('/viewblog.html', blog=new_post)
