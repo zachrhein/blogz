@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<!-- <table><a href= "/index?id={{user.username}}">{{user.username}}</a></table>
+<form action="/index" method ="GET"></form> -->
+<!-- needs to show all users on the site -->
+{% for i in user %}
+<table><a href= "/index?q={{i.username}}">{{i.username}}</a></table>
+<form action="/index" method ="GET"></form>
+<p>{{i.username}}</p>
+<p>_______________________________________________________________________________________________________________________________________________________________________</p>
+</form>
+{% endfor %}
+
+{% endblock %}

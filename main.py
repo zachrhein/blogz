@@ -15,9 +15,10 @@ class Blog(db.Model):
     body = db.Column(db.String(1000))
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
-    def __init__(self, title, body):
+    def __init__(self, title, body, owner):
         self.title = title
         self.body = body
+        self.owner = owner
 
 class User(db.Model):
 
@@ -87,7 +88,8 @@ def signup():
             username = ''
             usernameerror = "Please enter a valid username"
 
-        if existing_user == username:
+        if existing_user.username == username:
+            username = ''
             existserror = "Username already exists"
 
         if not usernameerror and not verifyerror and not passworderror and not existing_user:
@@ -98,7 +100,7 @@ def signup():
             return redirect('/newpost')
 
         else:
-            return render_template("signup.html",username = username, usernameerror = usernameerror, verifyerror = verifyerror, passworderror = passworderror, existserror = existserror )
+            return render_template("signup.html", username = username, usernameerror = usernameerror, verifyerror = verifyerror, passworderror = passworderror, existserror = existserror )
     return render_template('/signup.html')
         
 @app.route('/login', methods=['POST', 'GET'])
@@ -107,20 +109,33 @@ def login():
         username = request.form['username']
         password = request.form['password']
         user = User.query.filter_by(username=username).first()
+        usererror = ''
         if user and user.password == password:
             session['username'] = username
-            flash("Logged in")
-            return redirect('/')
+            return redirect('/newpost')
         else:
-            flash('User password incorrect, or user does not exist', 'error')
+            usererror = 'Username not found or incorrect password. Please check your spelling or create an account.'
+            return render_template('login.html', usererror=usererror)
 
     return render_template('login.html')
 
+@app.before_request
+def require_login():
+    allowed_routes = ['login', 'signup']
+    if request.endpoint not in allowed_routes and 'username' not in session:
+        return redirect('/login')
 
+
+@app.route('/logout')
+def logout():
+    del session['username']
+    return render_template('login.html')
 
 @app.route('/index', methods=['POST', 'GET'])
 def index():
-    pass
+    user_post = request.args.get('username')
+    user = User.query.get(user_post)
+    return render_template('index.html')
 
 
 
