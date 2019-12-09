@@ -8,8 +8,10 @@
 
 {% for i in blogs %}
 <table><a href= "/viewblog?id={{i.id}}">{{i.title}}</a></table>
-<form action="/viewblog" method ="GET"></form>
+<form action="/viewblog" method ="GET">
 <p>{{i.body}}</p>
+<p>{{i.owner.username}}</p>
+<li>by: <a href= "/user?q={{i.owner.username}}">{{i.owner.username}}</a></li>
 <p>_______________________________________________________________________________________________________________________________________________________________________</p>
 </form>
 {% endfor %}

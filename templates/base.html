@@ -4,20 +4,20 @@
         <title>{{title}}</title>
     </head>
 <body>
-<table><a href="/blog">Main Blog Page</a></table>
-<form action="/blog" method ="POST">
-<table><a href= "/newpost">Write a Post!</a></table>
-<form action="/newpost" method ="POST"></form>
-<table><a href= "/login">Login!</a></table>
-<form action="/login" method ="POST"></form>
-<table><a href= "/signup">Sign up!</a></table>
-<form action="/signup" method ="POST"></form>
 <div>
-    <a href='/logout'>log out</a>
+<table align="center">
+    <th><a href="/">Main Blog Page</a></th>
+    <th><a href= "/blog">All Posts</a></th>
+    <th><a href= "/newpost">Write a Post</a></th>
+    {% if not session['username'] %}
+        <th><a href= "/login">Login</a></th>
+        <th><a href= "/signup">Sign up</a></th>
+    {% else %}
+        <th><a href= "/logout">Log out</a></th>
+    {% endif %}
+</table>
 </div>
-
     {% block content %}
     {% endblock %}
-
 </body>
 </html>

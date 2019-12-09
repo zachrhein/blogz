@@ -20,6 +20,9 @@ class Blog(db.Model):
         self.body = body
         self.owner_id = owner
 
+    def __repr__(self):
+        return "Blog {self.title} by: {self.owner}"
+
 class User(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
@@ -36,7 +39,7 @@ class User(db.Model):
 
 
 
-@app.route('/')
+
 @app.route('/blog', methods=['POST', 'GET'])
 def blog():
     if request.method == 'GET':
@@ -56,7 +59,8 @@ def newpost():
     if request.method =='POST':
         blog_title = request.form['title']
         blog_body = request.form['body']
-        new_post = Blog(blog_title, blog_body, blog_owner)
+        user_id = User.query.filter_by(username=session['username']).first().id
+        new_post = Blog(blog_title, blog_body, user_id)
         db.session.add(new_post)
         db.session.commit()
         return render_template('/viewblog.html', blog=new_post)
@@ -87,8 +91,8 @@ def signup():
         if not 3 < len(username) or " " in username or username == '':
             username = ''
             usernameerror = "Please enter a valid username"
-
-        if existing_user.username == username:
+# checking if an existing user is true
+        if existing_user:
             username = ''
             existserror = "Username already exists"
 
@@ -131,13 +135,23 @@ def logout():
     del session['username']
     return render_template('login.html')
 
-@app.route('/index', methods=['POST', 'GET'])
+
+@app.route('/', methods=['GET'])
 def index():
-    user_post = request.args.get('username')
-    user = User.query.get(user_post)
-    return render_template('index.html')
+    user = User.query.all()
+    return render_template('index.html', user=user)
 
 
+
+@app.route('/user', methods=['POST', 'GET'])
+def user_page():
+    username = request.args.get('q')
+    if not username:
+        return redirect('/')
+    user = User.query.filter_by(username=username).first()
+    posts = user.blogs
+
+    return render_template('singleuser.html', user=user, posts=posts)
 
 
 

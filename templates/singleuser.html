@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{user.username}}</h1>
+<ul>
+{% for post in posts %}
+    <h2>{{post.title}}</h2>
+    <p>{{post.body}}</p>
+    <p>_______________________________________________________________________________________________________________________________________________________________________</p>
+    <!-- <li>by: <a href= "/user?q={{post.owner.username}}">{{post.owner.username}}</a></li> -->
+{% endfor %}
+</ul>
+{% endblock %}
