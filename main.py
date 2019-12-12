@@ -55,10 +55,21 @@ def viewblog():
 
 @app.route('/newpost', methods=['POST', 'GET'])
 def newpost():
-
+    titleerror=''
+    bodyerror=''
     if request.method =='POST':
         blog_title = request.form['title']
         blog_body = request.form['body']
+        if blog_title == '' and blog_body == '':
+            titleerror = "You cannot leave this blank!"
+            bodyerror="You cannot leave this blank!" 
+            return render_template('newpost.html', bodyerror=bodyerror, titleerror=titleerror)
+        if blog_title == '':
+            titleerror = "You cannot leave this blank!"
+            return render_template('newpost.html', titleerror=titleerror)
+        if blog_body == '':
+            bodyerror="You cannot leave this blank!" 
+            return render_template('newpost.html', bodyerror=bodyerror)
         user_id = User.query.filter_by(username=session['username']).first().id
         new_post = Blog(blog_title, blog_body, user_id)
         db.session.add(new_post)

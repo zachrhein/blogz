@@ -5,14 +5,21 @@
 
 
 
+<style>
+    .error {color: red; }
+</style>
+
+
 <h1>Write a Post!</h1>
 <form action='/newpost' method='POST'>
     <label>Make a Title!
         <input name="title" type="text" value='' />
+        <p class='error'>{{titleerror}}</p>
     </label>
 </br>
     <label>Body
         <input name="body" type="text" />
+        <p class='error'>{{bodyerror}}</p>
     </label>
 </br>
     <input type='submit' value='submit' />
